@@ -23,16 +23,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Split macOS Version
+      - name: Extract macOS Version
         id: split
         run: |
           string="${{ github.event.inputs.macos_version }}"
-          strippedVersion="${string//*v/}"
-          echo $strippedVersion
+          echo "::set-output name=version::${string//*v/}"
 
       - name: test output
         run: |
-          echo "${{ steps.split.outputs.macos_version }}"
+          echo "${{ steps.split.outputs.version }}"
     #   - name: Set environment variables
 
     #     run: |
