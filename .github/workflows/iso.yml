@@ -26,7 +26,9 @@ jobs:
       - name: Split macOS Version
         id: split
         run: |
-          echo "::set-output name=macos_version::${${{ github.event.inputs.macos_version }}##*v}"
+          string=${{ github.event.inputs.macos_version }}
+          strippedVersion="${string//./_}"
+          echo $strippedVersion
 
       - name: test output
         run: |
