@@ -27,7 +27,7 @@ jobs:
         id: split
         run: |
           string="${{ github.event.inputs.macos_version }}"
-          echo "::set-output name=version::${string//*v/}"
+          echo "version=${string//*v/}" >> $GITHUB_OUTPUT
 
       - name: test output
         run: |
