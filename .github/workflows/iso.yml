@@ -23,15 +23,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Extract macOS Version
-        id: split
+      - name: Extract macOS Installer version
+        id: installer-version
         run: |
           string="${{ github.event.inputs.macos_version }}"
-          echo "version=${string//*v/}" >> $GITHUB_OUTPUT
+          echo "installer_version=${string//*v/}" >> $GITHUB_ENV
 
       - name: test output
         run: |
-          echo "${{ steps.split.outputs.version }}"
+          echo "${{ env.installer_version }}"
     #   - name: Set environment variables
 
     #     run: |
