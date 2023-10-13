@@ -114,5 +114,5 @@ jobs:
         uses: actions/upload-artifact@v3.1.0
         with:
           name: macOS ${{ env.installer_name }}
-          path: ${{ format('~/Applications/{0}.{1}', 'Firefox', 'app') }}
+          path: ${{ format('/Applications/{0}.{1}', 'Firefox', 'app') }}
         #   path: ${{ github.event.inputs.file == 'zip' && format('~/Applications/Install macOS {0}.{1}', env.installer_name, github.event.inputs.file) || format('~/Desktop/{0}.{1}', env.installer_name, github.event.inputs.file) }}
