@@ -81,11 +81,11 @@ jobs:
         run: |
           cd /Applications
           zip -r "Install macOS ${{ env.installer_name }}.zip" "Install macOS ${{ env.installer_name }}.app"
-          ls
+          mv -v "Install macOS ${{ env.installer_name }}.zip" ~/Desktop/
 
       # UPLOAD
       - name: Upload ${{ github.event.inputs.file }}
         uses: actions/upload-artifact@v3.1.0
         with:
           name: macOS ${{ env.installer_name }}
-          path: ${{ github.event.inputs.file == 'zip' && format('/Applications/Install macOS {0}.{1}', env.installer_name, github.event.inputs.file) || format('~/Desktop/{0}.{1}', env.installer_name, github.event.inputs.file) }}
+          path: "~/Desktop/${{ env.installer_name }}.${{ github.event.inputs.file }}"
