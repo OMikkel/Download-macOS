@@ -45,12 +45,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      #   # RESTORE INSTALLER CACHE
+
       #   - name: Restore cached macOS Installer
       #     id: cache-installer-restore
       #     uses: actions/cache/restore@v3
       #     with:
       #       path: ~/Applications
       #       key: macos-installer-${{ env.installer_version }}
+
+      # DOWNLOAD INSTALLER
 
       #   - if: steps.cache-installer-restore.outputs.cache-hit != 'true'
       - name: Download macOS Installer
@@ -59,20 +63,28 @@ jobs:
           sleep 5
           softwareupdate --fetch-full-installer --full-installer-version ${{ env.installer_version }}
 
-      #   - name: Cache macOS Installer
+      #   # SAVE INSTALLER CACHE
+
+      #   - if: steps.cache-installer-restore.outputs.cache-hit != 'true'
+      #     name: Cache macOS Installer
       #     id: cache-installer-save
       #     uses: actions/cache/save@v3
       #     with:
       #       path: ~/Applications/Install macOS ${{ env.installer_name }}.app
       #       key: macos-installer-${{ env.installer_version }}
 
-      #   - name: Restore cached macOS ISO
-      #     id: cache-iso-restore
+      #   # RESTORE FILE CACHE
+
+      #   - name: Restore cached macOS ${{ github.event.inputs.file }}
+      #     id: cache-file-restore
       #     uses: actions/cache/restore@v3
       #     with:
-      #       path: ~/Desktop
-      #       key: macos-iso-${{ env.installer_version }}
+      #       path: ${{ github.event.inputs.file == 'zip' && '~/Applications' || '~/Desktop' }}
+      #       key: macos-${{ github.event.inputs.file }}-${{ env.installer_version }}
 
+      # GENERATE FILE
+
+      #   - if: steps.cache-file-restore.outputs.cache-hit != 'true' && github.event.inputs.file == 'dmg'
       - if: github.event.inputs.file == 'dmg'
         name: Generate ${{ github.event.inputs.file }} from macOS Installer
         run: |
@@ -83,6 +95,7 @@ jobs:
           hdiutil eject -force /Volumes/Install\ macOS\ ${{ env.installer_name }}
           sudo mv /tmp/${{ env.installer_name }}.dmg ~/Desktop/${{ env.installer_name }}.dmg
 
+      #   - if: steps.cache-file-restore.outputs.cache-hit != 'true' && github.event.inputs.file == 'iso'
       - if: github.event.inputs.file == 'iso'
         name: Generate ${{ github.event.inputs.file }} from macOS Installer
         run: |
@@ -96,36 +109,25 @@ jobs:
           mv -v ~/Desktop/${{ env.installer_name }}.cdr ~/Desktop/${{ env.installer_name }}.iso
           sudo rm -fv /tmp/${{ env.installer_name }}.dmg
 
+      #   - if: steps.cache-file-restore.outputs.cache-hit != 'true' && github.event.inputs.file == 'zip'
       - if: github.event.inputs.file == 'zip'
         name: Generate ${{ github.event.inputs.file }} from macOS Installer
         run: |
           cd /Applications
           zip -r "Install macOS ${{ env.installer_name }}.zip" "Install macOS ${{ env.installer_name }}.app"
 
-      #   - name: Cache macOS ISO
-      #     id: cache-iso-save
+      #   # SAVE FILE CACHE
+      #   - if: steps.cache-file-restore.outputs.cache-hit != 'true'
+      #     name: Cache macOS ${{ github.event.inputs.file }}
       #     uses: actions/cache/save@v3
       #     with:
-      #       path: ~/Desktop/${{ env.installer_name }}.iso
-      #       key: macos-iso-${{ env.installer_version }}
+      #       path: ${{github.event.inputs.file == 'zip' && '~/Applications/Install macOS ${{ env.installer_name }}.${{ github.event.inputs.file }}' || '~/Desktop/${{ env.installer_name }}.${{ github.event.inputs.file }}'}}
+      #       key: macos-${{ github.event.inputs.file }}-${{ env.installer_version }}
 
-      - if: github.event.inputs.file == 'dmg'
-        name: Upload ${{ github.event.inputs.file }}
+      # UPLOAD
+
+      - name: Upload ${{ github.event.inputs.file }}
         uses: actions/upload-artifact@v3.1.0
         with:
           name: macOS ${{ env.installer_name }}
-          path: "~/Desktop/${{ env.installer_name }}.dmg"
-
-      - if: github.event.inputs.file == 'iso'
-        name: Upload ${{ github.event.inputs.file }}
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: macOS ${{ env.installer_name }}
-          path: "~/Desktop/${{ env.installer_name }}.iso"
-
-      - if: github.event.inputs.file == 'zip'
-        name: Upload ${{ github.event.inputs.file }}
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: macOS ${{ env.installer_name }}
-          path: "/Applications/Install macOS ${{ env.installer_name }}.zip"
+          path: ${{ github.event.inputs.file == 'zip' &&  '/Applications/Install macOS ${{ env.installer_name }}.${{ github.event.inputs.file }}' || '~/Desktop/${{ env.installer_name }}.${{ github.event.inputs.file }}' }}
