@@ -32,6 +32,8 @@ jobs:
   setup:
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Extract version details
         id: extract-details
         run: |
