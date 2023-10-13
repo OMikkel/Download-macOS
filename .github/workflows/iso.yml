@@ -114,6 +114,7 @@ jobs:
         run: |
           cd /Applications
           zip -r "Install macOS ${{ env.installer_name }}.zip" "Install macOS ${{ env.installer_name }}.app"
+          ls ~/Applications
 
       #   # SAVE FILE CACHE
       #   - if: steps.cache-file-restore.outputs.cache-hit != 'true'
