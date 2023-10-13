@@ -29,21 +29,20 @@ env:
   installer_name: "" # Dont touch: Populated by extract-details (suppresses warnings)
 
 jobs:
-  setup:
+  build:
     runs-on: macos-latest
+    #if: github.repository == 'Comp-Labs/Download-macOS' -- Disable: Fails on forked and template generated repos
     steps:
+      - uses: actions/checkout@v3
+
+      # SETUP
+
       - name: Extract version details
         id: extract-details
         run: |
           string="${{ github.event.inputs.macos_version }}"
           echo "installer_version=${string//*v/}" >> $GITHUB_ENV
           echo "installer_name=${string// v*/}" >> $GITHUB_ENV
-
-  build:
-    runs-on: macos-latest
-    #if: github.repository == 'Comp-Labs/Download-macOS' -- Disable: Fails on forked and template generated repos
-    steps:
-      - uses: actions/checkout@v3
 
       #   # RESTORE INSTALLER CACHE
 
