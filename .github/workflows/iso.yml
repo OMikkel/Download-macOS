@@ -24,6 +24,8 @@ on:
           - dmg
           - zip
 
+run-name: Generate macOS ${{ github.event.inputs.macos_version }} ${{ github.event.inputs.file }} file
+
 env:
   installer_version: "" # Dont touch: Populated by extract-details (suppresses warnings)
   installer_name: "" # Dont touch: Populated by extract-details (suppresses warnings)
