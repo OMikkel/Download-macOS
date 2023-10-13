@@ -114,7 +114,7 @@ jobs:
         run: |
           cd /Applications
           zip -r "Install macOS ${{ env.installer_name }}.zip" "Install macOS ${{ env.installer_name }}.app"
-          ls ~/Applications
+          ls
 
       #   # SAVE FILE CACHE
       #   - if: steps.cache-file-restore.outputs.cache-hit != 'true'
@@ -130,4 +130,4 @@ jobs:
         uses: actions/upload-artifact@v3.1.0
         with:
           name: macOS ${{ env.installer_name }}
-          path: ${{ github.event.inputs.file == 'zip' &&  '/Applications/Install macOS ${{ env.installer_name }}.${{ github.event.inputs.file }}' || '~/Desktop/${{ env.installer_name }}.${{ github.event.inputs.file }}' }}
+          path: ${{ github.event.inputs.file == 'zip' &&  '~/Applications/Install macOS ${{ env.installer_name }}.${{ github.event.inputs.file }}' || '~/Desktop/${{ env.installer_name }}.${{ github.event.inputs.file }}' }}
