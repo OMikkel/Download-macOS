@@ -85,7 +85,7 @@ jobs:
 
       #   - if: steps.cache-file-restore.outputs.cache-hit != 'true' && github.event.inputs.file == 'dmg'
       - if: github.event.inputs.file == 'dmg'
-        name: Generate ${{ github.event.inputs.file }} from macOS Installer
+        name: Generate DMG from macOS Installer
         run: |
           sudo hdiutil create -o /tmp/${{ env.installer_name }} -size 16384m -volname ${{ env.installer_name }} -layout SPUD -fs HFS+J
           sudo hdiutil attach /tmp/${{ env.installer_name }}.dmg -noverify -mountpoint /Volumes/${{ env.installer_name }}
@@ -96,7 +96,7 @@ jobs:
 
       #   - if: steps.cache-file-restore.outputs.cache-hit != 'true' && github.event.inputs.file == 'iso'
       - if: github.event.inputs.file == 'iso'
-        name: Generate ${{ github.event.inputs.file }} from macOS Installer
+        name: Generate ISO from macOS Installer
         run: |
           sudo hdiutil create -o /tmp/${{ env.installer_name }} -size 16384m -volname ${{ env.installer_name }} -layout SPUD -fs HFS+J
           sudo hdiutil attach /tmp/${{ env.installer_name }}.dmg -noverify -mountpoint /Volumes/${{ env.installer_name }}
@@ -110,7 +110,7 @@ jobs:
 
       #   - if: steps.cache-file-restore.outputs.cache-hit != 'true' && github.event.inputs.file == 'zip'
       - if: github.event.inputs.file == 'zip'
-        name: Generate ${{ github.event.inputs.file }} from macOS Installer
+        name: Generate ZIP from macOS Installer
         run: |
           cd /Applications
           zip -r "Install macOS ${{ env.installer_name }}.zip" "Install macOS ${{ env.installer_name }}.app"
